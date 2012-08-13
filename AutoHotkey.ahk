@@ -42,6 +42,16 @@ return
 #0:: DllCall( "CascadeWindows", uInt,0, Int,4, Int,0, Int,0, Int,0 )
 return
 
+; CTRL+Shift+C Sends a copy, then sends Clipboard to Run
+^+c::
+{
+Send, ^c
+Sleep 50
+Run, %clipboard%
+Return
+}
+
+
 ; Win + Shift + E This is my Dev Enviornment Dev - Billing Repository
 #+e::Run explorer.exe "C:\Users\gvilla\Documents\Dev - Billing"
 return
