@@ -21,21 +21,69 @@
 ; + = Shift
 
 
+
+;stackoverflow
+;^+s:: Run, webs.bat
+;return
+
+; CTRL+Shift+Q
+^+Q::Run getdns
+return
+
+; CTRL+Shift+F
+;^+F::Run powershell.exe File "c:\bin\stopzoom.ps1"
+;return
+
+
+; CTRL+Shift+A, Auto HotKey
+^+A::Run npp AutoHotkey.ahk
+return
+
+; CTRL+Shift+M, Mintty
+^+M::Run C:\cygwin\bin\mintty.exe "- perl web.pl"
+return
+
+
+; CTRL+Shift+T, Open Tweet Deck
+^+T::
+IfWinExist TweetDeck
+	WinActivate
+else
+	Run C:\Program Files (x86)\Twitter\TweetDeck\TweetDeck.exe
+return
+
+
+; CTRL+Shift+S - Snipping Tool
+^+S::Run C:\Windows\system32\SnippingTool.exe
+return
+
+
+
+; CTRL+Shift+P, I want to Previous Track
+^+P::Send {Media_Play_Pause}
+return
+
+
 ; CTRL+Shift+N, I want to Next Track
 ^+N::Send {Media_Next}
 return
 
-; CTRL+Shift+P, I want to Previous Track
-^+P::Send {Media_Prev}
+; CTRL+Shift+B, I want to Previous Track
+^+B::Send {Media_Prev}
 return
 
-; CTRL+Shift+D, I want to Volume Down
-^+D::Send {Volume_Down}
+
+; CTRL+Shift+L, I want to Volume Down
+^+L::Send {Volume_Down}
 return
 
 
 ; CTRL+Shift+U, I want to Volume Up
-^+U::Send {Volume_Up}
+^+R::Send {Volume_Up}
+return
+
+; CTRL+Shift+X, Launch ProcessExporer
+^+X::Run C:\Users\gvilla\Documents\SysinternalsSuite\procexp.exe
 return
 
 
@@ -51,14 +99,14 @@ Run, %clipboard%
 Return
 }
 
-
-; Win + Shift + E This is my Dev Enviornment Dev - Billing Repository
-#+e::Run explorer.exe "C:\Users\gvilla\Documents\Dev - Billing"
+; Ctrl + E This is my Docs
+^+e::Run explorer.exe C:\Users\%USERNAME%\Documents\
 return
 
-; Win + F2 this is a web page with my shortcuts
-#F2::Run C:/Users/gvilla/Documents/_mypath/hotkeys.htm
+; Ctrl + w This is my Downloads
+^+W::Run explorer.exe C:\Users\%USERNAME%\Downloads
 return
+
 
 ; Win + z
 #z::Run www.autohotkey.com
@@ -77,13 +125,19 @@ return
 Run npp
 return
 
+; CTRL+Shift+Z for Zoomit
+^+Z::
+Run c:\sys\zoomit.exe
+return
+
 ; Win + s
 #s::
 Run C:\Program Files (x86)\Microsoft SQL Server\110\Tools\Binn\ManagementStudio\Ssms.exe
 return
 
 ; Control+Alt+g //Search Google from Any Application
-^!g::
+;^!g::
+^+g::
 {
 Send, ^c
 Sleep 50
@@ -91,8 +145,8 @@ Run, http://www.google.com/search?q=%clipboard%
 Return
 }
 
-; Control+Shift+r //Copies and runs
-^+r::
+; Control+Alt+r //Copies and runs
+^!r::
 {
 Send, ^c
 Sleep 50
@@ -161,6 +215,85 @@ WinMove, ahk_id %EWD_MouseWin%,, EWD_WinX + EWD_MouseX - EWD_MouseStartX, EWD_Wi
 EWD_MouseStartX := EWD_MouseX  ; Update for the next timer-call to this subroutine.
 EWD_MouseStartY := EWD_MouseY
 return
+
+;=======================================================================================
+;BDD Test Naming Mode AHK Script
+;
+;Description:
+;  Replaces spaces with underscores while typing, to help with writing BDD test names.
+;  Toggle on and off with Ctrl + Shift + U.
+;=======================================================================================
+
+
+;==========================
+;Initialise
+;==========================
+#NoEnv
+SendMode Input 
+SetWorkingDir %A_ScriptDir% 
+
+enabledIcon := "testnamingmode_16.ico"
+disabledIcon := "testnamingmode_disabled_16.ico"
+IsInTestNamingMode := false
+SetTestNamingMode(false)
+
+;==========================
+;Functions
+;==========================
+SetTestNamingMode(toActive) {
+  local iconFile := toActive ? enabledIcon : disabledIcon
+  local state := toActive ? "ON" : "OFF"
+
+  IsInTestNamingMode := toActive
+  Menu, Tray, Icon, %iconFile%,
+  Menu, Tray, Tip, Test naming mode is %state%  
+
+  Send {Shift Up}
+}
+
+;==========================
+;Test Mode toggle
+;==========================
+^+u::
+  SetTestNamingMode(!IsInTestNamingMode)
+return
+
+
+;==========================
+;Handle Enter press
+;==========================
+$Enter::
+  if (IsInTestNamingMode){
+	SetTestNamingMode(!IsInTestNamingMode)
+  }
+  else{
+	  Send, {Enter}
+ }
+return
+
+;==========================
+;Handle Escape press
+;==========================
+$Escape::
+  if (IsInTestNamingMode){
+	SetTestNamingMode(!IsInTestNamingMode)
+  }
+  else{
+  Send, {Escape}
+  }
+return
+
+;==========================
+;Handle SPACE press
+;==========================
+$Space::
+  if (IsInTestNamingMode) {
+    Send, _
+  } else {
+    Send, {Space}
+  }
+
+
 
 
 
